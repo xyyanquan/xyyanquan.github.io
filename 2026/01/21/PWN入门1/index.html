@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>响应云Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="响应云Blog"><meta name="msapplication-TileImage" content="https://cdn.jsdelivr.net/gh/removeif/removeif-demo@latest/img/favicon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="响应云Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="### 0x00 前言 写在前面，pwn的入门是个很艰辛的过程，整个过程会让你一次又一次怀疑自己是不是真的没有天赋，于我亲身经历而言，有一个靠谱的师傅或者学长是非常有必要的，有人带的情况下往往事半功倍，我把我学习的过程记录下来，纯新手向，面向哪些可能刚刚接触ctf更甚者是之前从未碰过电脑的人，但由于我也是个小菜鸡，如有讲错的地方请指正，也希望大家不要嫌弃我啰嗦，万分感谢！ ### 0x01 pwn"><meta property="og:type" content="blog"><meta property="og:title" content="响应云安全"><meta property="og:url" content="https://xyyanquan.github.io/"><meta property="og:site_name" content="响应云安全"><meta property="og:description" content="### 0x00 前言 写在前面，pwn的入门是个很艰辛的过程，整个过程会让你一次又一次怀疑自己是不是真的没有天赋，于我亲身经历而言，有一个靠谱的师傅或者学长是非常有必要的，有人带的情况下往往事半功倍，我把我学习的过程记录下来，纯新手向，面向哪些可能刚刚接触ctf更甚者是之前从未碰过电脑的人，但由于我也是个小菜鸡，如有讲错的地方请指正，也希望大家不要嫌弃我啰嗦，万分感谢！ ### 0x01 pwn"><meta property="og:locale" content="zh"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/removeif/removeif-demo@latest/img/avatar.png"><meta property="article:published_time" content="2026-01-21T11:37:26.345Z"><meta property="article:modified_time" content="2026-01-21T11:37:45.408Z"><meta property="article:author" content="响应云安全"><meta property="article:tag" content="响应云"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://cdn.jsdelivr.net/gh/removeif/removeif-demo@latest/img/avatar.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyyanquan.github.io/2026/01/21/PWN%E5%85%A5%E9%97%A81/"},"headline":"响应云Blog","image":["https://xyyanquan.github.io/img/og_image.png"],"datePublished":"2026-01-21T11:37:26.345Z","dateModified":"2026-01-21T11:37:45.408Z","author":{"@type":"Person","name":"xyyanquan"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject"}},"description":"### 0x00 前言 写在前面，pwn的入门是个很艰辛的过程，整个过程会让你一次又一次怀疑自己是不是真的没有天赋，于我亲身经历而言，有一个靠谱的师傅或者学长是非常有必要的，有人带的情况下往往事半功倍，我把我学习的过程记录下来，纯新手向，面向哪些可能刚刚接触ctf更甚者是之前从未碰过电脑的人，但由于我也是个小菜鸡，如有讲错的地方请指正，也希望大家不要嫌弃我啰嗦，万分感谢！ ### 0x01 pwn"}</script><link rel="canonical" href="https://xyyanquan.github.io/2026/01/21/PWN%E5%85%A5%E9%97%A81/"><link rel="icon" href="https://cdn.jsdelivr.net/gh/removeif/removeif-demo@latest/img/favicon.png"><meta name="referrer" content="no-referrer-when-downgrade"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/6.0.0/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/highlight.js/11.7.0/styles/atom-one-light.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.12.0/css/all.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css?family=Ubuntu:400,600|Source+Code+Pro|Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Microsoft YaHei:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&amp;amp;subset=latin,latin-ext|Inconsolata|Itim|Lobster.css"><script src="https://cdnjs.loli.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="/js/globalUtils.js"></script><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/lightgallery/1.10.0/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/justifiedGallery/3.8.1/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdnjs.loli.net/ajax/libs/pace/1.2.4/pace.min.js"></script><link rel="stylesheet" href="/live2d/waifu.css"><script type="text/javascript" async src="/live2d/autoload.js"></script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column has-navbar-fixed-top"><nav class="navbar navbar-main is-fixed-top"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="https://cdn.jsdelivr.net/gh/removeif/removeif-demo@latest/img/avatar.png" alt="响应云Blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a><a class="navbar-item" href="/album">相册</a><a class="navbar-item" href="/friend">友链</a><a class="navbar-item" href="/message">留言</a><a class="navbar-item" href="/self-talking">自言自语</a><a class="navbar-item" href="/music">音乐</a><a class="navbar-item" href="/media">媒体</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="云安全交流" href="https://gitter.im/hexo-theme-amazing/community"><i class="fab fa-gitter"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="仓库地址" href="https://github.com/xyyanquan/xyyanquan.github.io"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Rechercher" href="javascript:;"><i class="fas fa-search"></i></a><a class="navbar-item" id="night-nav" title="Night Mode" href="javascript:;"><i class="fas fa-moon" id="night-icon"></i></a></div></div></div></nav><script type="text/javascript" src="/js/theme-setting.js"></script><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><!--!--><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><i class="far fa-calendar-plus"> </i>2026-01-21  <a class="commentCountImg" href="/2026/01/21/PWN%E5%85%A5%E9%97%A81/#comment-container"><span class="display-none-class">d41d8cd98f00b204e9800998ecf8427e</span><i class="far fa-comment-dots"></i> <span class="commentCount" id="d41d8cd98f00b204e9800998ecf8427e">99+</span>  </a><span class="level-item"><i class="far fa-clock"> </i>9 m  <i class="fas fa-pencil-alt"> </i>1.3 k</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visites</span></div></div><h1 class="title is-3 is-size-4-mobile"> </h1><div class="content"><p>### 0x00 前言</p>
+<p>写在前面，pwn的入门是个很艰辛的过程，整个过程会让你一次又一次怀疑自己是不是真的没有天赋，于我亲身经历而言，有一个靠谱的师傅或者学长是非常有必要的，有人带的情况下往往事半功倍，我把我学习的过程记录下来，纯新手向，面向哪些可能刚刚接触ctf更甚者是之前从未碰过电脑的人，但由于我也是个小菜鸡，如有讲错的地方请指正，也希望大家不要嫌弃我啰嗦，万分感谢！</p>
+<p>### 0x01 pwn环境的搭建</p>
+<p>pwn环境的搭建在网上的教程五花八门，一开始的我也没有配置好，这里从头开始教大家如何在ubuntu上安装我们需要的各种工具。</p>
+<p>* 各个版本大同小异，但是不建议用最新的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">deb <span class="attr">https</span>:<span class="comment">//mirrors.aliyun.com/ubuntu/ jammy main restricted universe multiverse</span></span><br><span class="line"></span><br><span class="line">deb-src <span class="attr">https</span>:<span class="comment">//mirrors.aliyun.com/ubuntu/ jammy main restricted universe multiverse</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">deb <span class="attr">https</span>:<span class="comment">//mirrors.aliyun.com/ubuntu/ jammy-security main restricted universe multiverse</span></span><br><span class="line"></span><br><span class="line">deb-src <span class="attr">https</span>:<span class="comment">//mirrors.aliyun.com/ubuntu/ jammy-security main restricted universe multiverse</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">deb <span class="attr">https</span>:<span class="comment">//mirrors.aliyun.com/ubuntu/ jammy-updates main restricted universe multiverse</span></span><br><span class="line"></span><br><span class="line">deb-src <span class="attr">https</span>:<span class="comment">//mirrors.aliyun.com/ubuntu/ jammy-updates main restricted universe multiverse</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">\# deb <span class="attr">https</span>:<span class="comment">//mirrors.aliyun.com/ubuntu/ jammy-proposed main restricted universe multiverse</span></span><br><span class="line"></span><br><span class="line">\# deb-src <span class="attr">https</span>:<span class="comment">//mirrors.aliyun.com/ubuntu/ jammy-proposed main restricted universe multiverse</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">deb <span class="attr">https</span>:<span class="comment">//mirrors.aliyun.com/ubuntu/ jammy-backports main restricted universe multiverse</span></span><br><span class="line"></span><br><span class="line">deb-src <span class="attr">https</span>:<span class="comment">//mirrors.aliyun.com/ubuntu/ jammy-backports main restricted universe multiverse</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>#### 换源你可以直接去 &#x2F;etc&#x2F;apt&#x2F;sources.list 修改里面的内容，也可以使用vim来修改注意要把原来的源全部注释掉，在前面加‘#’ 具体方法这里不多概述自行度娘</p>
+<p>#### checksec</p>
+<p>接下来安装我们最开始的一个工具，可以用这个工具探查</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sudo apt install checksec</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>安装完成后可以用它来检查二进制文件开启的保护机制有哪些，用法是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">checksec --file=filename</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>![v2-d353405976ad1be87065ef078f17de32_1440w.png](<a target="_blank" rel="noopener" href="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEQHb9pcLNnvQjh7AzHeSOHowjUze5LeQACNCIAArdAgFe0WSEQkqC0XTgE.png">https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEQHb9pcLNnvQjh7AzHeSOHowjUze5LeQACNCIAArdAgFe0WSEQkqC0XTgE.png</a>)</p>
+<p>##### 我们也可以用file命令来查看文件具体信息，用法是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">file filename</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>![v2-8b6f9a26225d3e0ecb46d8ce4ca94139_1440w.png](<a target="_blank" rel="noopener" href="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEQHcVpcLRhM3tuO4NF1Mq5yc2CgsIrKAACOCIAArdAgFcwMEh9qS5tEzgE.png">https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEQHcVpcLRhM3tuO4NF1Mq5yc2CgsIrKAACOCIAArdAgFcwMEh9qS5tEzgE.png</a>)</p>
+<p>#### pwndbg</p>
+<p>接下来便是安装我们的调试神器——pwndbg了</p>
+<p>首先我们要知道的是pwndbg是基于gdb的一个调试插件，相比于传统gdb，pwndbg的界面更加炫酷，功能也更加好用，下面是传统gdb界面</p>
+<p>![局部截取_20260121_191220.png](<a target="_blank" rel="noopener" href="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEQHcZpcLSoS-aSsrw7cCpQ/_2YPoUjzJQACOSIAArdAgFc8HQkG9eK5vTgE.png">https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEQHcZpcLSoS-aSsrw7cCpQ\_2YPoUjzJQACOSIAArdAgFc8HQkG9eK5vTgE.png</a>)</p>
+<p>#### 这是pwndbg的界面</p>
+<p>![局部截取_20260121_191327.png](<a target="_blank" rel="noopener" href="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEQHchpcLVmWDe4dkBkrp0xC94xEb2U2QACOyIAArdAgFdj2EfLFTqGDjgE.png">https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEQHchpcLVmWDe4dkBkrp0xC94xEb2U2QACOyIAArdAgFdj2EfLFTqGDjgE.png</a>)</p>
+<p>##### 是不是有hacker那味了</p>
+<p>##### 由于其是属于github上面的一个项目，我们可以直接git clone下来</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">git clone https://github.com/pwndbg/pwndbg</span><br><span class="line"></span><br><span class="line">cd pwndbg</span><br><span class="line"></span><br><span class="line">./setup.sh</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>##### 如果被一面墙挡住的话，那么可以使用神奇的力量</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">git clone https://gh-proxy.org/https://github.com/pwndbg/pwndbg.git</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>#### 嗯~ o(*￣▽￣*)o 就是这样</p>
+<p>### pwntools</p>
+<p>pwntools是我们写脚本的一个python库，这里安装就很简单了，pip安装即可，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">pip install pwntools</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">\<span class="comment"># 利用pwntools库</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> \*</span><br><span class="line"></span><br><span class="line">\<span class="comment"># 声明二进制文件结构</span></span><br><span class="line"></span><br><span class="line">context(arch=<span class="string">&#x27;amd64&#x27;</span>,os=<span class="string">&#x27;linux&#x27;</span>,log\_level=<span class="string">&#x27;debug&#x27;</span>)</span><br><span class="line"></span><br><span class="line">\<span class="comment"># 连接服务器端口</span></span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&quot;host&quot;</span>,post)</span><br><span class="line"></span><br><span class="line">\<span class="comment">#交互模式</span></span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>#### 额，如果你看不懂那就要学习一下python了</p>
+<p>### ROPgadget</p>
+<p>安装命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sudo apt install python3-ropgadget</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这个插件可以用于搜寻二进制文件中的gadget片段，可以辅助构造rop链，使用命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">ROPgadget --binary filename</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>![局部截取_20260121_192347.png](<a target="_blank" rel="noopener" href="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEQHcxpcLdel7OHOOYiPOmFKtqbATwYSwACQCIAArdAgFfJF3pB1EkWyDgE.png">https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEQHcxpcLdel7OHOOYiPOmFKtqbATwYSwACQCIAArdAgFfJF3pB1EkWyDgE.png</a>)</p>
+<p>##### 如果你只想找ret相关的gadget，或者想同时想找ret和pop的gadget，你可以：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">ROPgadget --binary filename --only &quot;ret&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>![局部截取_20260121_192512.png](<a target="_blank" rel="noopener" href="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEQHc5pcLet6kB3WxRnpuVEkhUgYEGp9wACQiIAArdAgFe-Egaxm4I60jgE.png">https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEQHc5pcLet6kB3WxRnpuVEkhUgYEGp9wACQiIAArdAgFe-Egaxm4I60jgE.png</a>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">ROPgadget --binary gift --only &quot;ret|pop&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>### seccomp-tools</p>
+<p>##### 该工具用来检测二进制文件中的哪些system命令允许调用，常用于检测沙箱机制(sandbox)，安装命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sudo apt install gcc ruby-dev</span><br><span class="line"></span><br><span class="line">sudo gem install seccomp-tools</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">seccomp-tools dump ./filename</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>### IDA Pro</p>
+<p>##### IDA Pro是一款强大的反编译工具，用于逆向分析二进制文件，常用于对RE和PWN类型题目的逆向分析，至于怎么下载，我只能说如果你有money的话请移步官方网站：</p>
+<p><a target="_blank" rel="noopener" href="https://hex-rays.com/ida-pro">https://hex-rays.com/ida-pro</a></p>
+<p>##### 也可以在吾爱破解下载</p>
+<p>### 0x02 常用linux命令及入门pwn题型详解</p>
+<p>##### 这里我们以最简单的nc签到题为例，带你走进pwn的世界，并且教会你基础的linux命令</p>
+<p>。。。</p>
+<p>#### 其实还有一个小案例这里就不写了，还能再水一篇 略略略！！！</p>
+<p>![666](<a target="_blank" rel="noopener" href="https://ts1.tc.mm.bing.net/th/id/R-C.a268da4fa8ddd506607ef55fbfe9e20a?rik=HLeOiORX/sVhHw%5C&riu=http://www.runoob.com/wp-content/uploads/2018/03/xxxx1.jpg%5C&ehk=DSj5fnBnIeR82LsGYoA80cMgmqbgAK3xbKSnyst2Y3Q=%5C&risl=%5C&pid=ImgRaw%5C&r=0">https://ts1.tc.mm.bing.net/th/id/R-C.a268da4fa8ddd506607ef55fbfe9e20a?rik=HLeOiORX%2fsVhHw\&amp;riu=http%3a%2f%2fwww.runoob.com%2fwp-content%2fuploads%2f2018%2f03%2fxxxx1.jpg\&amp;ehk=DSj5fnBnIeR82LsGYoA80cMgmqbgAK3xbKSnyst2Y3Q%3d\&amp;risl=\&amp;pid=ImgRaw\&amp;r=0</a>)</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p><a href="https://xyyanquan.github.io/2026/01/21/PWN入门1/">https://xyyanquan.github.io/2026/01/21/PWN入门1/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Auteur</h6><a href="https://xyyanquan.github.io"><p>xyyanquan</p></a></div></div><div class="level-item is-narrow"><div><h6>Posté le</h6><p>2026-01-21</p></div></div><div class="level-item is-narrow"><div><h6>Mis à jour le</h6><p>2026-01-21</p></div></div><div class="level-item is-narrow"><div><h6>Licencié sous</h6><p><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a class="icon" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a><a class="icon" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="recommend-area"><div class="recommend-post"><span class="is-size-6 has-text-grey has-mr-7"># Related Post</span><br><span>  1.<a class="is-size-6" href="/2026/01/21/W&amp;Jsoft-D-Security%E6%95%B0%E6%8D%AE%E4%BB%BF%E6%B3%84%E9%9C%B2%E7%B3%BB%E7%BB%9F(DLP)%E5%AD%98%E5%9C%A8%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E/" target="_blank"> </a><br></span><span>  2.<a class="is-size-6" href="/2026/01/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" target="_blank"> </a><br></span><span>  3.<a class="is-size-6" href="/2026/01/21/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/" target="_blank"> </a><br></span><span>  4.<a class="is-size-6" href="/2026/01/21/%E5%AE%89%E5%85%A8%E5%85%A5%E9%97%A8/" target="_blank"> </a><br></span><span>  5.<a class="is-size-6" href="/2026/01/21/%E5%85%B3%E4%BA%8E%E6%88%91/" target="_blank">关于我</a><br></span></div></div><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/social-share.js/1.0.16/css/share.min.css"><div class="social-share"></div><script src="https://cdnjs.loli.net/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Vous aimez cet article? Soutenez l&#039;auteur avec</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="https://raw.githubusercontent.com/removeif/blog_image/master/img/2019/20190802135456.png" alt="Alipay"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="https://raw.githubusercontent.com/removeif/blog_image/master/img/2019/20190802135550.png" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2026/01/21/W&amp;Jsoft-D-Security%E6%95%B0%E6%8D%AE%E4%BB%BF%E6%B3%84%E9%9C%B2%E7%B3%BB%E7%BB%9F(DLP)%E5%AD%98%E5%9C%A8%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E/"><span class="level-item"> </span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--><div class="card"><div class="card-content"><div class="title is-5">Commentaires</div><div id="comment-container"></div><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/gitalk/1.6.0/gitalk.css"><script> $.getScript('/js/gitalk.min.js', function () { 
+            var gitalk = new Gitalk({
+            language:'zh-CN',
+            id: 'd41d8cd98f00b204e9800998ecf8427e',
+            repo: 'cloud-security-comment',
+            owner: '响应云安全',
+            clientID: '46a9f3481b46ea0129d8',
+            clientSecret: '79c7c9cb847e141757d7864453bcbf89f0655b24',
+            admin: ["响应云安全"],
+            createIssueManually: true,
+            distractionFreeMode: false,
+            perPage: 10,
+            pagerDirection: 'last',
+            proxy: 'https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token',
+            
+            enableHotKey: true,
+            isLocked: false
+        })
+        gitalk.render('comment-container')});</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://cdn.jsdelivr.net/gh/removeif/removeif-demo@latest/img/avatar.png" alt="响应云安全"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">响应云安全</p><p class="is-size-6 is-block">一个网络安全小白的Blog</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>中国</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Articles</p><a href="/archives/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Catégories</p><a href="/categories/"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags/"><p class="title">0</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Suivre</a></div><div class="level is-mobile"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/响应云安全"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Weibo" href="https://weibo.com/响应云安全"><i class="fab fa-weibo"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Email" href="mailto:cloud-security@163.com"><i class="fa fa-envelope"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="官网" href="https://响应云安全.github.io/"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/atom.xml"><i class="fas fa-rss"></i></a></div><div><hr><p id="hitokoto">:D 一言句子获取中...</p><script type="text/javascript" defer>function getYiyan(){
+                                $.getJSON("https://v1.hitokoto.cn/", function (data) {
+                                if(data){
+                                    $('#hitokoto').html("");
+                                    $('#hitokoto').append("<strong style='color: #3273dc;'>"+data.hitokoto+"</strong>"+
+                                    "<p>"+"From《"+data.from+"》</p><p>Provider-"+data.creator+"</p>");
+                                }});}
+                                $(function (){getYiyan();$('#hitokoto').click(function(){getYiyan();})});</script></div></div></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Liens</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://www.yixuyun.cn" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">易旭云服务器</span></span><span class="level-right"><span class="level-item tag">www.yixuyun.cn</span></span></a></li></ul></div></div></div><div class="card widget"><div class="card-content"><h3 class="menu-label">Latest Comment</h3><span class="body_hot_comment">Loading...Wait a Minute!</span></div></div><div class="card widget"><div class="card-content"><h3 class="menu-label">Récents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-01-21T11:37:26.345Z">2026-01-21</time></p><p class="title"><a href="/2026/01/21/PWN%E5%85%A5%E9%97%A81/"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-01-21T03:29:03.538Z">2026-01-21</time></p><p class="title"><a href="/2026/01/21/W&amp;Jsoft-D-Security%E6%95%B0%E6%8D%AE%E4%BB%BF%E6%B3%84%E9%9C%B2%E7%B3%BB%E7%BB%9F(DLP)%E5%AD%98%E5%9C%A8%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E/"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-01-21T03:26:49.594Z">2026-01-21</time></p><p class="title"><a href="/2026/01/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-01-21T03:26:18.788Z">2026-01-21</time></p><p class="title"><a href="/2026/01/21/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-01-21T03:24:03.217Z">2026-01-21</time></p><p class="title"><a href="/2026/01/21/%E5%AE%89%E5%85%A8%E5%85%A5%E9%97%A8/"> </a></p></div></article></div></div><!--!--><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile is-marginless" href="/archives/2026/01/"><span class="level-start"><span class="level-item">January 2026</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><!--!--><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Abonnez-vous aux mises à jour</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Abonnez-vous"></div></div></form></div></div></div><!--!--><div class="column-right-shadow is-hidden-widescreen"></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="https://cdn.jsdelivr.net/gh/removeif/removeif-demo@latest/img/avatar.png" alt="响应云Blog" height="28"></a><p class="size-small"><span>&copy; 2026 xyyanquan</span>  Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a> &amp; <a href="https://github.com/removeif/hexo-theme-amazing" target="_blank">Amazing</a> <br><span>© <a href="http://www.beian.miit.gov.cn/" target="_blank">小云ICP备5201314号-8</a><br></span><span>© 版权说明：[本网站专注于云安全响应相关内容分享，所有内容仅供学习交流使用，如有侵权，请<a href="/message" target="_blank">留言</a>，立即处理]<br /></span><span><span id="statistic-times">loading...</span><script>function createTime(time) {
+            var n = new Date(time);
+            now.setTime(now.getTime() + 250),
+                days = (now - n) / 1e3 / 60 / 60 / 24,
+                dnum = Math.floor(days),
+                hours = (now - n) / 1e3 / 60 / 60 - 24 * dnum,
+                hnum = Math.floor(hours),
+            1 == String(hnum).length && (hnum = "0" + hnum),
+                minutes = (now - n) / 1e3 / 60 - 1440 * dnum - 60 * hnum,
+                mnum = Math.floor(minutes),
+            1 == String(mnum).length && (mnum = "0" + mnum),
+                seconds = (now - n) / 1e3 - 86400 * dnum - 3600 * hnum - 60 * mnum,
+                snum = Math.round(seconds),
+            1 == String(snum).length && (snum = "0" + snum),
+                document.getElementById("statistic-times").innerHTML = "❤️Site from <strong>"+time.split(" ")[0].replace(/\//g,".")+"</strong> has existed <strong>" + dnum + "</strong> d <strong>" + hnum + "</strong> h <strong>" + mnum + "</strong> m <strong>" + snum + "</strong> s！❤️";
+        }var now = new Date();setInterval("createTime('2018/11/11 00:00:00')", 250,"");</script><br></span><div class="size-small"><span>❤️Thx <strong><span id="busuanzi_value_site_uv">99+</span></strong> users <strong><span id="busuanzi_value_site_pv">99+</span></strong> visited！❤️</span></div></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="仓库地址" href="https://github.com/xyyanquan/xyyanquan.github.io"><i class="fab fa-github"></i></a></p></div><div class="sideMusic"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script src="/js/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script><meting-js style="width: auto;height: 2000px;" server="netease" type="playlist" id="2364053447" theme="#2980b9" loop="all" autoplay="false" order="list" storageName="aplayer-setting" lrctype="0" list-max-height="400px" fixed="true"></meting-js></div></div></div></div></footer><script src="https://cdnjs.loli.net/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script><script src="https://cdnjs.loli.net/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script><script>moment.locale("zh");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Retour au sommet" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdnjs.loli.net/ajax/libs/lightgallery/1.10.0/js/lightgallery.min.js" defer></script><script src="https://cdnjs.loli.net/ajax/libs/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><script>$.getScript('/js/comment-issue-data.js',function(){loadIssueData('46a9f3481b46ea0129d8','79c7c9cb847e141757d7864453bcbf89f0655b24','响应云安全','cloud-security-comment',false);})</script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Ecrivez quelque chose..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Ecrivez quelque chose...","untitled":"(Sans titre)","posts":"Articles","pages":"Pages","categories":"Catégories","tags":"Tags"});
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js"></script><script type="text/javascript">var pjax = new Pjax({
+            elements: "a",//代表点击链接就更新
+            selectors: [  //代表要更新的节点
+                ".section",
+                "title"
+            ],
+            cache: true,
+            cacheBust:false
+        })
+
+        function loadBusuanzi(){
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js", function () {});
+        }
+
+        function loadMathJax() { //加载mathjax
+            $.getScript("//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML", function () {
+                MathJax.Hub.Config({ tex2jax: { inlineMath: [['$', '$'], ['\(', '\)']] } });
+                var math = document.getElementsByClassName("entry-content")[0];
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub, math]);
+            });
+        };
+
+        // 开始 PJAX 执行的函数
+        document.addEventListener('pjax:send', function () {
+        });
+        
+        // PJAX 完成之后执行的函数，可以和上面的重载放在一起
+        document.addEventListener('pjax:complete', function () {
+            $(".section").css({opacity:1});
+            if(true){
+                $.getScript('/js/comment-issue-data.js',function(){loadIssueData('46a9f3481b46ea0129d8','79c7c9cb847e141757d7864453bcbf89f0655b24','响应云安全','cloud-security-comment',false);});
+            }
+            if(false){
+                loadMathJax();
+            }
+            loadMainJs(jQuery, window.moment, window.ClipboardJS, window.IcarusThemeSettings);
+            loadBackTop();
+            loadBusuanzi();
+            if(typeof loadBanner == 'function'){
+                loadBanner();
+            }
+        });</script></body></html>
